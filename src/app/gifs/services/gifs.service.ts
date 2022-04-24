@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Data, GIFType } from 'src/app/interfaces/interface';
 import { environment } from './../../../environments/environment';
@@ -32,13 +32,18 @@ export class GifsService {
       localStorage.setItem('history', JSON.stringify(this._history));
     }
 
+    const params = new HttpParams()
+      .set('api_key', apiKey)
+      .set('limit', '10')
+      .set('q', query);
+
     this.http
-      .get<GIFType>(`${url}/search?api_key=${apiKey}&q=${query}`)
-      .subscribe(resp => {
+      .get<GIFType>(`${url}/search`, { params })
+      .subscribe((resp) => {
         this.resultados = resp.data;
         localStorage.setItem('resultados', JSON.stringify(this.resultados));
       });
 
-    console.log(this._history);
+    console.log(this._history, params);
   }
 }
